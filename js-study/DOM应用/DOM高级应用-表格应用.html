@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>表格应用</title>
+		<script type="text/javascript">
+			window.onload =function(){
+				var oTab = document.getElementById("tab1");
+				var oTxt1 = document.getElementById("txt1");
+				var oBtn1 = document.getElementById("btn1");
+				var oBtn2 = document.getElementById("btn2");
+				var oBtn3 = document.getElementById("btn3");
+				var oBtn4 = document.getElementById("btn4");
+				var oBtn5 = document.getElementById("btn5");
+				var oBtn6 = document.getElementById("btn6");
+				var oName = document.getElementById("name");
+				var oAge = document.getElementById("age");
+				var oSearch = document.getElementById("search");
+				/***********获取表格元素***********/
+				//获取元素便捷操作：tBodies tHead tFoot rows cells 
+				oBtn1.onclick = function(){
+//					oTxt1.value = oTab.getElementsByTagName("tbody")[0].
+//								  getElementsByTagName("tr")[1].getElementsByTagName("td")[2].innerHTML;
+					oTxt1.value = oTab.tBodies[0].rows[1].cells[2].innerHTML;   //简便操作
+				}
+				
+				/***********隔行变色***********/
+				oBtn2.onclick = function(){
+					var aRow = oTab.tBodies[0].rows;
+					console.log(aRow.length)
+					for(var i=0;i<aRow.length;i++){
+						
+						//奇数行变红
+						if(i%2==0){
+							aRow[i].style.background = "red";
+						}
+						//偶数行变蓝
+						else{
+							aRow[i].style.background = "blue";
+						}
+					}
+				}
+				
+				/***********清除表格颜色***********/
+				oBtn5.onclick = function(){
+					for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+						oTab.tBodies[0].rows[i].style.background = "";
+					}
+				}
+				
+				/***********添加、删除表格行***********/
+				//初始化序号，防止序号删除后重新使用
+				var id =oTab.tBodies[0].rows.length+1;
+				
+				oBtn3.onclick = function(){
+					console.log(1);
+					//tbody增加tr
+					var oTr = document.createElement("tr");
+					oTab.tBodies[0].appendChild(oTr);
+					
+					//tr增加td
+					var oTd = document.createElement("td");
+					oTd.innerHTML=id++;
+					oTr.appendChild(oTd);
+					
+					var oTd = document.createElement("td");
+					oTd.innerHTML=oName.value;
+					oTr.appendChild(oTd);
+					
+					var oTd = document.createElement("td");
+					oTd.innerHTML=oAge.value;
+					oTr.appendChild(oTd);
+					
+					var oTd = document.createElement("td");
+					oTd.innerHTML="<a href='#'>删除</a>";
+					oTr.appendChild(oTd);
+					
+					//删除行
+					oTd.getElementsByTagName("a")[0].onclick = function(){
+						oTab.tBodies[0].removeChild(this.parentNode.parentNode)
+					}
+				}
+				
+				/***********搜索表格中的数据***********/
+				/*实现功能：
+				 * 1.基础搜索
+				 * 2.忽略大小写      .toLowerCase()
+				 * 3.模糊搜索          .search()
+				 * 4.多关键字搜索   .split()
+				 */
+				oBtn4.onclick = function(){
+					if(oSearch.value=="search..."||oSearch.value==""){
+								alert("请输入您希望搜索的内容");
+						}else{
+							
+							/***********基础搜索*****************
+							for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+								for(j=0;j<4;j++){
+									var sTab = oTab.tBodies[0].rows[i].cells[j].innerHTML;
+									var sTxt = oSearch.value;
+									if(sTab == sTxt){
+										oTab.tBodies[0].rows[i].cells[j].style.background="yellow";
+									}else{
+										oTab.tBodies[0].rows[i].cells[j].style.background="";
+									}
+								}
+							}
+							*/
+							
+							/***********忽略大小写*****************
+							for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+								for(j=0;j<4;j++){
+									var sTab = oTab.tBodies[0].rows[i].cells[j].innerHTML;
+									var sTxt = oSearch.value;
+									//.toLowerCase() 忽略大小写
+									if(sTab.toLowerCase()==sTxt.toLowerCase()){
+										oTab.tBodies[0].rows[i].cells[j].style.background="yellow";
+									}else{
+										oTab.tBodies[0].rows[i].cells[j].style.background="";
+									}
+								}
+							}
+							*/
+							
+							/***********模糊搜索*****************
+							for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+								for(j=0;j<4;j++){
+									var sTab = oTab.tBodies[0].rows[i].cells[j].innerHTML;
+									var sTxt = oSearch.value;
+									//.search() 模糊搜索，在被搜索的范围内有值匹配则返回所在位置，否则返回-1
+									if(sTab.search(sTxt)!=-1){
+										oTab.tBodies[0].rows[i].cells[j].style.background="yellow";
+									}else{
+										oTab.tBodies[0].rows[i].cells[j].style.background="";
+									}
+								}
+							}
+							*/
+							
+							//***********多关键字搜索*****************
+							for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+								for(j=0;j<4;j++){
+									var sTab = oTab.tBodies[0].rows[i].cells[j].innerHTML;
+									var sTxt = oSearch.value;
+									//用' '切开搜索的关键字，每个关键字都循环模糊搜索
+									var arr = sTxt.split(' ');
+									oTab.tBodies[0].rows[i].cells[j].style.background="";
+									for(k=0;k<arr.length;k++){
+										if(sTab.search(arr[k])!=-1){
+											oTab.tBodies[0].rows[i].cells[j].style.background="yellow";
+										}
+									}
+								}
+							}
+							
+						}
+				}
+				
+				//***********序号升序排序*****************
+				oBtn6.onclick = function(){
+					var arr=[];
+					for(var i=0;i<oTab.tBodies[0].rows.length;i++){
+						arr[i]=oTab.tBodies[0].rows[i];
+					}
+					arr.sort( function(tr1,tr2){
+						var n1 = parseInt(tr1.cells[0].innerHTML);
+						var n2 = parseInt(tr2.cells[0].innerHTML);
+						return n1-n2;
+					})
+					for(var i=0;i<arr.length;i++){
+						console.log(arr[i]);
+						oTab.tBodies[0].appendChild(arr[i]);
+					}
+				}
+				
+			}
+		</script>
+	</head>
+	<body>
+		<h1>此页面主要讲解 获取表格、隔行变色、添加和删除行、搜索、排序</h1>
+		姓名：<input id="name" type="text" /></br>
+		年龄：<input id="age" type="text" /></br>
+		<input type="button"  id="btn3" value="添加" /></br></br>
+		<input id="search" type="text" value="search..." onclick="if(this.value=='search...'){
+					this.value=''}" onblur="if(this.value==''){this.value='search...'}"/>
+		<input type="button"  id="btn4" value="搜索" /></br></br>
+		<table id="tab1" border="1" width="500">
+			<thead>
+				<td>ID</td>
+				<td>姓名</td>
+				<td>年龄</td>
+				<td>操作</td>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>Abc</td>
+					<td>21</td>
+					<td> </td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>李四</td>
+					<td>22</td>
+					<td> </td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>王五</td>
+					<td>23</td>
+					<td> </td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>刘能</td>
+					<td>24</td>
+					<td> </td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<td>T1</td>
+				<td>T2</td>
+				<td>T3</td>
+				<td> </td>
+			</tfoot>
+		</table>
+		<input type="text" name="获取的表格元素" id="txt1"  />
+		<input id="btn1" type="button" value="获取指定表格元素"/></br>
+		<input id="btn2" type="button" value="隔行变色"/></br>
+		<input id="btn5" type="button" value="清除表格颜色"/></br>
+		<input type="button"  id="btn6" value="排序" />
+		
+		
+	</body>
+</html>

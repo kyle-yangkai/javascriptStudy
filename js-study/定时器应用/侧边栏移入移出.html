@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>侧边栏移入移出</title>
+		<style type="text/css">
+			body,div,ul{
+				margin: 0;
+				border: 0;
+				padding: 0;
+			}
+			#div1{
+				width: 200px;
+				height: 200px;
+				position: absolute;
+				left:-170px;
+			}
+			#left{
+				width:170px;
+				height: 100%;
+				line-height: 100px;
+				float: left;
+				background:red;
+			}
+			#right{
+				width: 30px;
+				height: 100%;
+				float: right;
+			}
+			#right p{
+				display: block;
+				height: 70px;
+				background: #00ffde;
+				margin: 65px auto;
+			}
+		</style>
+		<script type="text/javascript">
+			/**功能：鼠标移到分享栏上，隐藏部分显示出，移出时，再次隐藏
+			 * 思路：1.鼠标移入移出功能由.onmouseover()和.onmouseout()实现
+			 *     2.隐藏部分移入移出需要添加运动效果，可以采用定时器.setInterval()实现
+			 */
+			window.onload = function(){
+				var oDiv1 = document.getElementById("div1");
+				var oBtn1 = document.getElementById("btn1");
+				var oBtn2 = document.getElementById("btn2");
+				
+				//创建timer方法，方便后面引用
+				var timer = null;
+				
+				//封装GET_STYLE函数用于获取元素式样
+				function GET_STYLE(obj,name){
+					if(obj.currentStyle){return obj.currentStyle[name]}  //IE
+					else{return getComputedStyle(obj,false)[name]}       //chrome firefox
+				}
+				
+				//封装MOVE函数用于规定div运动过程
+				function MOVE (TARGET) {
+					
+					//清除定时器，防止定时器同时多次触发
+					clearInterval(timer);
+					
+					//设置运动定时器
+					timer = setInterval(function(){
+						
+						//创建LEFT变量便于代码简化
+						var LEFT = parseInt(GET_STYLE(oDiv1,"left"));
+						
+						//检测循环阶段LEFT值的变化情况
+						console.log("循环后LEFT值为："+LEFT);
+						
+						//判断运动停止条件
+						if((LEFT>=TARGET&&TARGET>=0)||(LEFT<=TARGET&&TARGET<0)){
+							clearInterval(timer);
+						}else{
+							
+							//像素会自动取整，需要避免速度过小（绝对值<1）而导致还未运动到指定位置便停止的情况
+							if((TARGET-LEFT)>=0){
+								oDiv1.style.left = LEFT+Math.ceil((TARGET-LEFT)/3)+"px";
+							}else{
+								oDiv1.style.left = LEFT+Math.floor((TARGET-LEFT)/3)+"px";
+							}
+						}
+					},30)
+				}
+				
+				
+				/*添加按钮点击实现移入移出
+				oBtn1.onclick = function(){
+					MOVE(0);
+				};
+				oBtn2.onclick = function(){
+					MOVE(-170);
+				};
+				*/
+				
+				//调用函数实现移入移出功能
+				oDiv1.onmouseover = function(){
+					MOVE(0);
+				};
+				oDiv1.onmouseout = function(){
+					MOVE(-170);
+				};
+				
+				/*以下代码也可以实现移入移出效果，但是没有简化并且不能重复使用，因此尽量不要使用
+				 * 
+				//定义鼠标移入移出函数
+				oDiv1.onmouseover = function(){
+					clearInterval(timer);
+					timer = setInterval(function(){
+						if(parseInt(GET_STYLE(oDiv1,"left"))>=0){
+							clearInterval(timer);
+						}else{
+							oDiv1.style.left = parseInt(GET_STYLE(oDiv1,"left"))+2+"px";
+						}
+					},30);
+				};
+				oDiv1.onmouseout = function(){
+					clearInterval(timer);
+					timer = setInterval(function(){
+						if(parseInt(GET_STYLE(oDiv1,"left"))<=-170){
+							clearInterval(timer);
+						}else{
+							oDiv1.style.left = parseInt(GET_STYLE(oDiv1,"left"))-2+"px";
+						}
+					},30);
+				};
+				*/
+			}
+		</script>
+	</head>
+	<body>
+		<h1>此页面使用js实现侧边栏移入移除效果</h1>
+		<!--左边div为隐藏项，右边div为提示项--> 
+		<input type="button"  id="btn1" value="显示" />
+		<input type="button"  id="btn2" value="隐藏" />
+		<div id="div1">
+			<div id="left">
+				此部分正常状态为隐藏状态，鼠标移入时显示
+			</div>
+			<div id="right">
+				<p>分<br/>享<br/>栏<br/></p>
+				
+			</div>
+		</div>
+	</body>
+</html>
