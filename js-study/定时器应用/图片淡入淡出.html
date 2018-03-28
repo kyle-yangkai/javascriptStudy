@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>图片淡入淡出</title>
+		<style type="text/css">
+			
+			#div1{
+				width: 200px;
+				height: 200px;
+				margin: 100px auto;
+				background: red;
+				opacity:0.4;
+				filter:alpha(opacity=40); /* 针对 IE8 以及更早的版本 */
+			}
+		</style>
+		<script type="text/javascript">
+			/**功能：鼠标移到div上，div背景透明度变大，移出时，透明度还原
+			 * 思路：1.鼠标移入移出功能由.onmouseover()和.onmouseout()实现
+			 *     2.，可以采用定时器.setInterval()实现
+			 */
+			window.onload = function(){
+				var oDiv1 = document.getElementById("div1");
+				var oBtn1 = document.getElementById("btn1");
+				var oBtn2 = document.getElementById("btn2");
+				
+				//创建timer方法，方便后面引用
+				var timer = null;
+				
+				//封装GET_STYLE函数用于获取元素式样
+				function GET_STYLE(obj,name){
+					if(obj.currentStyle){return obj.currentStyle[name]}  //IE
+					else{return getComputedStyle(obj,false)[name]}       //chrome firefox
+				}
+				
+				
+				//封装MOVE函数用于规定div运动过程
+				function ALPHA_CHANGE(iOPACITY) {
+					/**参数
+					 * iOPACITY--> div需要到达的透明度
+					 */
+					
+					//清除定时器，防止定时器同时多次触发
+					clearInterval(timer);
+					
+					//设置运动定时器
+					timer = setInterval(function(){
+						
+						//创建OPACITY对象便于后面调用
+						var OPACITY = parseFloat(GET_STYLE(oDiv1,"opacity"));
+						
+						//创建SPEED变量
+						var SPEED = 0.0;
+						
+						//判断div需要淡入还是淡出
+						if(iOPACITY>=OPACITY){
+							SPEED = 0.05;
+						}else{
+							SPEED = -0.05;
+						}
+						
+						//判断定时器是否启动
+						if(OPACITY==iOPACITY){
+							clearInterval(timer);
+						}else{
+							
+							//图片透明度匀速变化
+							oDiv1.style.opacity = OPACITY+SPEED;
+							oDiv1.style.filter = "alpha(opacity="+((OPACITY+SPEED)*100)+")";  // 针对 IE8 以及更早的版本
+						}
+					},30)
+				}
+				
+				
+//				//添加按钮点击实现淡入淡出
+//				oBtn1.onclick = function(){
+//					ALPHA_CHANGE(1.0);
+//				};
+//				oBtn2.onclick = function(){
+//					ALPHA_CHANGE(0.4);
+//				};
+//				
+//				
+				//调用函数实现淡入淡出功能
+				oDiv1.onmouseover = function(){
+					ALPHA_CHANGE(1.0);
+				};
+				oDiv1.onmouseout = function(){
+					ALPHA_CHANGE(0.4);
+				};
+			}
+		</script>
+	</head>
+	<body>
+		<h1>此页面使用js实现图片淡入淡出效果</h1> 
+		<input type="button"  id="btn1" value="淡入" />
+		<input type="button"  id="btn2" value="淡出" />
+		<div id="div1">
+			
+		</div>
+	</body>
+</html>
