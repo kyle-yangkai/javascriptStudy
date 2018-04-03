@@ -1,0 +1,77 @@
+body,div,ul,li,img{
+	padding: 0;
+	border: 0;
+	margin: 0;
+}
+#outSide{
+	width: 400px;
+	height: 400px;
+	margin: 0px auto;
+}
+
+/*大图部分样式*/
+#top{
+	width: 400px;
+	height: 300px;
+	position: relative;
+}
+#bigImg{
+	width: 400px;
+	height: 300px;
+	position: absolute;
+	list-style: none;
+	z-index: 0;
+}
+#bigImg li{
+	position: absolute;
+	width: 400px;
+	height: 300px;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+#bigImg li img{
+	position: absolute;
+	width: 400px;
+	height: 300px;
+}
+#topLeft,#topRight{
+	width: 200px;
+	height: 300px;
+	float: left;
+	opacity: 0;
+	filter: alpha(opacity=0);  // 针对 IE8 以及更早的版本
+	z-index: 0; 
+}
+#Next,#Prev{
+	position: absolute;
+	top: 135px;
+}
+#Prev{
+	left: 20px;
+}
+#Next{
+	right: 20px;
+}
+
+/*小图部分样式*/
+#bottom{
+	width: 400px;
+	height: 100px;
+	position: relative;
+	background: #d3d3d36e;
+	overflow: hidden;
+	
+}
+#miniImg{
+	width:675px;
+	height: 100px;
+	list-style: none;
+	position: relative;
+}
+#miniImg li {
+	position: absolute;
+	border: 5px solid #d3d3d36e;
+	opacity: 0.6;
+	filter: alpha(opacity=60);  // 针对 IE8 以及更早的版本
+}
