@@ -5,3 +5,5 @@ This repository is used as a note for studying javascript
 
 2、新增定时器应用————图片淡入淡出
 
+3、新增常用函数封装
+
